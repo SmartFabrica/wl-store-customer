@@ -1,0 +1,84 @@
+import type { Metadata } from "next";
+import { PackageSearchIcon } from "lucide-react";
+
+import { ActiveFilterChips } from "@/components/catalog/active-filter-chips";
+import { FilterDrawer } from "@/components/catalog/filter-drawer";
+import { FilterPanel } from "@/components/catalog/filter-panel";
+import { ProductCard } from "@/components/catalog/product-card";
+import { SortSelect } from "@/components/catalog/sort-select";
+import { SiteHeader } from "@/components/shared/site-header";
+import {
+  activeFilterCount,
+  filterProducts,
+  parseCatalogFilters,
+} from "@/lib/catalog/filters";
+
+export const metadata: Metadata = {
+  title: "Ürün kataloğu",
+};
+
+const CatalogPage = async ({ searchParams }: PageProps<"/catalog">) => {
+  const filters = parseCatalogFilters(await searchParams);
+  const products = filterProducts(filters);
+  const activeCount = activeFilterCount(filters);
+
+  return (
+    <div className="flex min-h-screen flex-col bg-background">
+      <SiteHeader query={filters.q} cartCount={3} />
+
+      <div className="grid flex-1 items-start lg:grid-cols-[270px_1fr]">
+        <aside className="sticky top-16.5 hidden max-h-[calc(100vh-4.125rem)] self-stretch overflow-auto border-r border-border bg-card lg:block">
+          <FilterPanel filters={filters} />
+        </aside>
+
+        <main className="min-w-0 px-5 pt-6 pb-10 sm:px-7">
+          <div className="mb-4 flex flex-wrap items-center gap-4">
+            <FilterDrawer activeCount={activeCount}>
+              <FilterPanel filters={filters} />
+            </FilterDrawer>
+
+            <p className="font-heading text-xl font-bold text-foreground">
+              {products.length}{" "}
+              <span className="font-sans text-sm font-normal text-muted-foreground">
+                ürün
+              </span>
+            </p>
+
+            <div className="ml-auto flex items-center gap-2.25">
+              <span className="hidden text-[13px] font-medium text-muted-foreground sm:inline">
+                Sırala
+              </span>
+              <SortSelect filters={filters} />
+            </div>
+          </div>
+
+          <ActiveFilterChips filters={filters} />
+
+          {products.length === 0 ? (
+            <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border bg-card px-6 py-16 text-center">
+              <PackageSearchIcon
+                aria-hidden
+                className="size-8 text-placeholder"
+              />
+              <p className="font-heading text-base font-semibold text-foreground">
+                Sonuç bulunamadı
+              </p>
+              <p className="max-w-80 text-sm text-muted-foreground">
+                Seçtiğiniz filtrelerle eşleşen ürün yok. Filtreleri gevşetip
+                tekrar deneyin.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-5 min-[560px]:grid-cols-2 min-[1100px]:grid-cols-3 min-[1500px]:grid-cols-4">
+              {products.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
+        </main>
+      </div>
+    </div>
+  );
+};
+
+export default CatalogPage;
