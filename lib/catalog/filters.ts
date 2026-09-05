@@ -5,8 +5,9 @@ import {
   type Product,
   type SortValue,
 } from "@/lib/catalog/types";
+import { CATALOG_PATH } from "@/lib/routes";
 
-export const CATALOG_PATH = "/catalog";
+export { CATALOG_PATH };
 
 export const FILTER_PARAM = {
   q: "q",

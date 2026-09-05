@@ -4,8 +4,8 @@ import { PackageSearchIcon } from "lucide-react";
 import { ActiveFilterChips } from "@/components/catalog/active-filter-chips";
 import { FilterDrawer } from "@/components/catalog/filter-drawer";
 import { FilterPanel } from "@/components/catalog/filter-panel";
-import { ProductCard } from "@/components/catalog/product-card";
 import { SortSelect } from "@/components/catalog/sort-select";
+import { ProductCard } from "@/components/shared/product-card";
 import { SiteHeader } from "@/components/shared/site-header";
 import {
   activeFilterCount,

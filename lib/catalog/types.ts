@@ -14,6 +14,23 @@ export type Product = {
   lead: string;
 };
 
+export type SpecRow = {
+  label: string;
+  value: string;
+};
+
+export type CompatibilityGroup = {
+  brand: string;
+  models: string[];
+};
+
+export type ProductDetail = {
+  description: string;
+  specs: SpecRow[];
+  compatibility: CompatibilityGroup[];
+  imageLabels: string[];
+};
+
 export const SORT_OPTIONS = [
   { value: "new", label: "Yeniler" },
   { value: "price_asc", label: "Artan Fiyat" },

@@ -1,16 +1,22 @@
 "use client";
 
 import { PlusIcon } from "lucide-react";
+import { cn } from "cn";
 
 import { Button } from "@/components/ui/button";
 
-/** Sepete ekleme. TODO: Sepet servisi bağlanınca gerçek mutasyona bağlanacak. */
 export const AddToCartButton = ({
   productId,
   productName,
+  quantity = 1,
+  className,
+  iconClassName,
 }: {
   productId: string;
   productName: string;
+  quantity?: number;
+  className?: string;
+  iconClassName?: string;
 }) => {
   return (
     <Button
@@ -18,11 +24,11 @@ export const AddToCartButton = ({
       aria-label={`${productName} ürününü sepete ekle`}
       onClick={() => {
         // TODO: Sepet API'si bağlanacak.
-        console.info("sepete ekle", productId);
+        console.info("sepete ekle", productId, quantity);
       }}
-      className="mt-3.5 h-10 w-full gap-1.5 text-[13.5px] font-semibold"
+      className={cn("w-full gap-1.5 font-semibold", className)}
     >
-      <PlusIcon className="size-3.75" strokeWidth={2.2} />
+      <PlusIcon className={cn("size-3.75", iconClassName)} strokeWidth={2.2} />
       Sepete ekle
     </Button>
   );

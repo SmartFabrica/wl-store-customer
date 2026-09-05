@@ -4,7 +4,6 @@ import { cn } from "cn";
 import { buildCatalogHref, toggleFilter } from "@/lib/catalog/filters";
 import type { CatalogFilters } from "@/lib/catalog/types";
 
-/** "Sadece stoktakiler" anahtarı — görünüm switch, davranış bağlantı. */
 export const StockToggle = ({ filters }: { filters: CatalogFilters }) => {
   const href = buildCatalogHref(toggleFilter(filters, { type: "inStock" }));
 

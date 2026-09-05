@@ -1,4 +1,4 @@
-import type { FacetOption, Product } from "@/lib/catalog/types";
+import type { FacetOption, Product, ProductDetail } from "@/lib/catalog/types";
 
 // TODO: Katalog API'si bağlanınca bu sabitler yerine sunucudan gelen veri
 // kullanılacak. Şimdilik tasarımdaki örnek veri birebir taşındı.
@@ -146,3 +146,49 @@ export const PRODUCTS: Product[] = [
     lead: "Termin: 3-5 iş günü",
   },
 ];
+
+/**
+ * Ürün detayı. Tasarımda tek bir ürün için detay verisi olduğundan tüm
+ * ürünlerde aynı örnek içerik gösteriliyor; katalog API'si bağlanınca yerini
+ * ürüne özel veri alacak.
+ */
+export const DEFAULT_PRODUCT_DETAIL: ProductDetail = {
+  description:
+    "Yüksek basınçlı hidrolik pompa sistemleri için tasarlanmış NBR esaslı sızdırmazlık contası. Aşınmaya ve yağa dayanıklı yapısı sayesinde uzun servis ömrü sunar. Endüstriyel iş makineleri ve sabit hidrolik ünitelerinde orijinal parça yerine kullanıma uygundur. Çalışma sıcaklığı −30 °C ile +120 °C arasındadır.",
+  specs: [
+    { label: "Malzeme", value: "NBR (Nitril Kauçuk)" },
+    { label: "İç çap", value: "42 mm" },
+    { label: "Dış çap", value: "56 mm" },
+    { label: "Kalınlık", value: "6,5 mm" },
+    { label: "Çalışma sıcaklığı", value: "−30 / +120 °C" },
+    { label: "Basınç dayanımı", value: "350 bar" },
+    { label: "Sertlik", value: "70 Shore A" },
+    { label: "Ağırlık", value: "18 g" },
+  ],
+  compatibility: [
+    {
+      brand: "Bosch",
+      models: ["CX-220", "CX-240", "LT-90", "LT-110", "GX-300"],
+    },
+    { brand: "SKF", models: ["RB-6204", "RB-6205"] },
+    { brand: "Parker", models: ["PV-016", "PV-020", "PV-024", "PH-330"] },
+    { brand: "Festo", models: ["DSBC-32", "DSBC-40", "DNC-50"] },
+    { brand: "Continental", models: ["CT-1028", "CT-1044"] },
+  ],
+  imageLabels: ["ANA GÖRSEL", "GÖRSEL 2", "GÖRSEL 3", "GÖRSEL 4"],
+};
+
+export const getProductById = (id: string) =>
+  PRODUCTS.find((product) => product.id === id) ?? null;
+
+export const getProductDetail = (): ProductDetail => DEFAULT_PRODUCT_DETAIL;
+
+/** Aynı kategorideki diğer ürünler; yetmezse katalogdan tamamlanır. */
+export const getSimilarProducts = (product: Product, limit = 5) => {
+  const others = PRODUCTS.filter((item) => item.id !== product.id);
+  const sameCategory = others.filter(
+    (item) => item.category === product.category,
+  );
+  const rest = others.filter((item) => item.category !== product.category);
+  return [...sameCategory, ...rest].slice(0, limit);
+};
