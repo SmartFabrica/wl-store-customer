@@ -11,18 +11,25 @@ import {
 } from "@/components/shared/field-shell";
 
 type TextareaFieldProps = Omit<ComponentProps<typeof Textarea>, "id"> &
-  Pick<FieldShellProps, "id" | "label" | "required" | "error">;
+  Pick<FieldShellProps, "id" | "label" | "required" | "error" | "labelHidden">;
 
 export const TextareaField = ({
   id,
   label,
   required,
   error,
+  labelHidden,
   className,
   ...props
 }: TextareaFieldProps) => {
   return (
-    <FieldShell id={id} label={label} required={required} error={error}>
+    <FieldShell
+      id={id}
+      label={label}
+      required={required}
+      error={error}
+      labelHidden={labelHidden}
+    >
       <Textarea
         id={id}
         required={required}

@@ -1,5 +1,8 @@
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
+import { buttonVariants } from "@/components/ui/button";
 import { formatPrice } from "@/lib/format";
+import { QUOTE_NEW_PATH } from "@/lib/routes";
 
 export const MobileCheckoutBar = ({ subtotal }: { subtotal: number }) => {
   return (
@@ -10,10 +13,14 @@ export const MobileCheckoutBar = ({ subtotal }: { subtotal: number }) => {
           {formatPrice(subtotal)}
         </p>
       </div>
-      {/* TODO: Teklif oluşturma akışı bağlanacak. */}
-      <Button type="button" disabled className="h-13 flex-1 text-[15px]">
+      <Link
+        href={QUOTE_NEW_PATH}
+        className={buttonVariants({
+          className: "h-13 flex-1 text-[15px] font-semibold",
+        })}
+      >
         Teklif oluştur
-      </Button>
+      </Link>
     </div>
   );
 };

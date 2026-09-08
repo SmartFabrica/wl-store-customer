@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 import { InfoCallout } from "@/components/shared/info-callout";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { formatPrice } from "@/lib/format";
-import { CATALOG_PATH } from "@/lib/routes";
+import { CATALOG_PATH, QUOTE_NEW_PATH } from "@/lib/routes";
 import type { Cart } from "@/lib/cart/types";
 
 export const OrderSummary = ({ cart }: { cart: Cart }) => {
@@ -47,10 +47,14 @@ export const OrderSummary = ({ cart }: { cart: Cart }) => {
         </div>
       </dl>
 
-      {/* TODO: Teklif oluşturma akışı bağlanacak. */}
-      <Button type="button" disabled className="mt-5 h-13 w-full text-[15px]">
+      <Link
+        href={QUOTE_NEW_PATH}
+        className={buttonVariants({
+          className: "mt-5 h-13 w-full text-[15px] font-semibold",
+        })}
+      >
         Teklif oluştur
-      </Button>
+      </Link>
 
       <div className="mt-3.5 text-center">
         <Link

@@ -10,6 +10,7 @@ export type FieldShellProps = {
   label: string;
   required?: boolean;
   error?: string;
+  labelHidden?: boolean;
   className?: string;
   children: ReactNode;
 };
@@ -19,6 +20,7 @@ export const FieldShell = ({
   label,
   required,
   error,
+  labelHidden,
   className,
   children,
 }: FieldShellProps) => {
@@ -29,6 +31,7 @@ export const FieldShell = ({
         className={cn(
           "text-xs font-semibold",
           required ? "text-foreground" : "text-muted-foreground",
+          labelHidden && "sr-only",
         )}
       >
         {label}

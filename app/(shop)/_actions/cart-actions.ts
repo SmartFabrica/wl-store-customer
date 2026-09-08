@@ -57,3 +57,7 @@ export const removeFromCart = async (productId: string) => {
   const lines = await readCartLines();
   await writeCart(lines.filter((line) => line.productId !== productId));
 };
+
+export const clearCart = async () => {
+  await writeCart([]);
+};
