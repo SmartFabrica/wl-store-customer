@@ -3,16 +3,14 @@ import { SearchIcon, ShoppingCartIcon, UserRoundIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CATALOG_PATH, FILTER_PARAM } from "@/lib/catalog/filters";
+import { FILTER_PARAM } from "@/lib/catalog/filters";
+import { getCart } from "@/lib/cart/cart";
 import { BRAND_NAME } from "@/lib/brand";
+import { CART_PATH, CATALOG_PATH } from "@/lib/routes";
 
-export const SiteHeader = ({
-  query = "",
-  cartCount = 0,
-}: {
-  query?: string;
-  cartCount?: number;
-}) => {
+export const SiteHeader = async ({ query = "" }: { query?: string }) => {
+  const { itemCount } = await getCart();
+
   return (
     <header className="sticky top-0 z-40 flex h-16.5 items-center gap-6 border-b border-border bg-card px-5 sm:px-7">
       <Link href={CATALOG_PATH} className="flex flex-none items-center gap-2.5">
@@ -58,13 +56,14 @@ export const SiteHeader = ({
         <Button
           variant="outline"
           size="icon"
-          aria-label={`Sepet, ${cartCount} ürün`}
+          aria-label={`Sepet, ${itemCount} ürün`}
+          render={<Link href={CART_PATH} />}
           className="relative size-10 rounded-lg bg-card"
         >
           <ShoppingCartIcon className="size-4.75 text-slate-600" />
-          {cartCount > 0 ? (
+          {itemCount > 0 ? (
             <span className="absolute -top-1.5 -right-1.5 flex h-4.5 min-w-4.5 items-center justify-center rounded-full border-2 border-card bg-accent px-1 text-[10px] font-bold text-accent-foreground">
-              {cartCount}
+              {itemCount}
             </span>
           ) : null}
         </Button>

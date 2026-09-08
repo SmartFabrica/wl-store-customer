@@ -5,6 +5,7 @@ import { ActiveFilterChips } from "@/components/catalog/active-filter-chips";
 import { FilterDrawer } from "@/components/catalog/filter-drawer";
 import { FilterPanel } from "@/components/catalog/filter-panel";
 import { SortSelect } from "@/components/catalog/sort-select";
+import { EmptyState } from "@/components/shared/empty-state";
 import { ProductCard } from "@/components/shared/product-card";
 import { SiteHeader } from "@/components/shared/site-header";
 import {
@@ -24,7 +25,7 @@ const CatalogPage = async ({ searchParams }: PageProps<"/catalog">) => {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <SiteHeader query={filters.q} cartCount={3} />
+      <SiteHeader query={filters.q} />
 
       <div className="grid flex-1 items-start lg:grid-cols-[270px_1fr]">
         <aside className="sticky top-16.5 hidden max-h-[calc(100vh-4.125rem)] self-stretch overflow-auto border-r border-border bg-card lg:block">
@@ -55,19 +56,12 @@ const CatalogPage = async ({ searchParams }: PageProps<"/catalog">) => {
           <ActiveFilterChips filters={filters} />
 
           {products.length === 0 ? (
-            <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border bg-card px-6 py-16 text-center">
-              <PackageSearchIcon
-                aria-hidden
-                className="size-8 text-placeholder"
-              />
-              <p className="font-heading text-base font-semibold text-foreground">
-                Sonuç bulunamadı
-              </p>
-              <p className="max-w-80 text-sm text-muted-foreground">
-                Seçtiğiniz filtrelerle eşleşen ürün yok. Filtreleri gevşetip
-                tekrar deneyin.
-              </p>
-            </div>
+            <EmptyState
+              variant="boxed"
+              icon={<PackageSearchIcon className="size-9" strokeWidth={1.8} />}
+              title="Sonuç bulunamadı"
+              description="Seçtiğiniz filtrelerle eşleşen ürün yok. Filtreleri gevşetip tekrar deneyin."
+            />
           ) : (
             <div className="grid grid-cols-1 gap-5 min-[560px]:grid-cols-2 min-[1100px]:grid-cols-3 min-[1500px]:grid-cols-4">
               {products.map((product) => (

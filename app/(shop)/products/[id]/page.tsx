@@ -25,13 +25,9 @@ import {
   getProductById,
   getProductDetail,
   getSimilarProducts,
-  PRODUCTS,
 } from "@/lib/catalog/data";
 import { buildCatalogHref, parseCatalogFilters } from "@/lib/catalog/filters";
 import { CATALOG_PATH } from "@/lib/routes";
-
-export const generateStaticParams = () =>
-  PRODUCTS.map((product) => ({ id: product.id }));
 
 export const generateMetadata = async ({
   params,
@@ -59,7 +55,7 @@ const ProductDetailPage = async ({ params }: PageProps<"/products/[id]">) => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SiteHeader cartCount={3} />
+      <SiteHeader />
 
       <div className="mx-auto max-w-295 px-5 pt-6 pb-14 sm:px-7">
         <Breadcrumb className="mb-5.5">
