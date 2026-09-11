@@ -10,3 +10,6 @@ export const quoteSubmittedPath = (quoteNumber: string) =>
   `/quote/submitted/${quoteNumber}`;
 
 export const productPath = (id: string) => `/products/${id}`;
+
+export const quoteDetailPath = (quoteNumber: string) =>
+  `/quotes/${quoteNumber}`;
