@@ -28,7 +28,7 @@ export const ProductCard = ({
     >
       <Link href={href} className="block focus-visible:outline-none">
         <ImagePlaceholder label="ÜRÜN GÖRSELİ" className="aspect-4/3">
-          {compact ? null : (
+          {compact || product.inStock === undefined ? null : (
             <StockBadge
               inStock={product.inStock}
               className="absolute top-2.5 left-2.5 rounded-full text-[11px]"
@@ -44,7 +44,7 @@ export const ProductCard = ({
         )}
       >
         <p className="mb-0.75 text-[11px] font-medium text-placeholder">
-          {product.brand}
+          {product.brand_name}
         </p>
 
         <h3
@@ -57,14 +57,14 @@ export const ProductCard = ({
             href={href}
             className="rounded-sm outline-offset-2 group-hover:text-primary focus-visible:outline-2 focus-visible:outline-ring"
           >
-            {product.name}
+            {product.title}
           </Link>
         </h3>
 
         {compact ? null : (
           <div className="mt-2.25 mb-2">
             <span className="inline-block rounded-[7px] bg-muted px-2.25 py-1 text-[11px] font-semibold text-slate-600">
-              {product.category}
+              {product.category_name}
             </span>
           </div>
         )}
@@ -78,7 +78,7 @@ export const ProductCard = ({
           MPN: {product.mpn}
         </p>
 
-        {compact ? null : (
+        {compact || !product.lead ? null : (
           <span className="mt-2.25 inline-flex items-center gap-1.5 self-start rounded-[7px] border border-border bg-background px-2.25 py-1">
             <ClockIcon aria-hidden className="size-3 text-muted-foreground" />
             <span className="text-[11px] font-semibold text-slate-600">
@@ -102,7 +102,7 @@ export const ProductCard = ({
 
         <AddToCartButton
           productId={product.id}
-          productName={product.name}
+          productName={product.title}
           className={cn(
             compact ? "mt-3 h-9 text-[12.5px]" : "mt-3.5 h-10 text-[13.5px]",
           )}

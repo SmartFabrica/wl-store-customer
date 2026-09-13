@@ -23,10 +23,10 @@ export const CartLineItem = ({ item }: { item: CartItem }) => {
           href={productPath(product.id)}
           className="font-heading text-[15px] leading-snug font-semibold text-foreground hover:text-primary"
         >
-          {product.name}
+          {product.title}
         </Link>
         <p className="mt-0.75 text-[11px] font-medium text-placeholder">
-          {product.brand}
+          {product.brand_name}
         </p>
         <p className="mt-0.5 font-mono text-[11.5px] font-medium text-placeholder">
           MPN: {product.mpn}
@@ -34,7 +34,10 @@ export const CartLineItem = ({ item }: { item: CartItem }) => {
 
         <div className="mt-3 flex flex-wrap items-center gap-4">
           <QuantityStepper productId={product.id} quantity={quantity} />
-          <RemoveLineButton productId={product.id} productName={product.name} />
+          <RemoveLineButton
+            productId={product.id}
+            productName={product.title}
+          />
         </div>
       </div>
 
@@ -51,7 +54,7 @@ export const CartLineItem = ({ item }: { item: CartItem }) => {
               {formatPrice(lineTotal)}
             </p>
             <p className="mt-0.75 font-mono text-[11px] font-medium text-placeholder">
-              {formatPrice(product.price ?? 0)} × {quantity}
+              {formatPrice(Number(product.price ?? 0))} × {quantity}
             </p>
           </>
         )}

@@ -1,4 +1,4 @@
-import { CASES_BY_MODEL, MODELS_BY_BRAND, PRODUCTS } from "@/lib/catalog/data";
+import { CASES_BY_MODEL, MODELS_BY_BRAND } from "@/lib/catalog/data";
 import {
   SORT_OPTIONS,
   type CatalogFilters,
@@ -151,32 +151,41 @@ export const availableCases = (models: string[]) => [
 
 const matchesQuery = (product: Product, q: string) => {
   const needle = q.toLocaleLowerCase("tr");
-  return [product.name, product.brand, product.mpn, product.category].some(
-    (field) => field.toLocaleLowerCase("tr").includes(needle),
-  );
+  return [
+    product.title,
+    product.brand_name,
+    product.mpn,
+    product.category_name,
+  ].some((field) => field.toLocaleLowerCase("tr").includes(needle));
 };
 
 const sortProducts = (products: Product[], sort: SortValue) => {
   const sorted = [...products];
   if (sort === "az") {
-    return sorted.sort((a, b) => a.name.localeCompare(b.name, "tr"));
+    return sorted.sort((a, b) => a.title.localeCompare(b.title, "tr"));
   }
   if (sort === "price_asc" || sort === "price_desc") {
     return sorted.sort((a, b) => {
       if (a.price == null) return 1;
       if (b.price == null) return -1;
-      return sort === "price_asc" ? a.price - b.price : b.price - a.price;
+      const [left, right] = [Number(a.price), Number(b.price)];
+      return sort === "price_asc" ? left - right : right - left;
     });
   }
   return sorted;
 };
 
-export const filterProducts = (filters: CatalogFilters) => {
-  const filtered = PRODUCTS.filter((product) => {
-    if (filters.category && product.category !== filters.category) return false;
-    if (filters.brands.length && !filters.brands.includes(product.brand))
+export const filterProducts = (
+  products: Product[],
+  filters: CatalogFilters,
+) => {
+  const filtered = products.filter((product) => {
+    if (filters.category && product.category_name !== filters.category)
       return false;
-    if (filters.inStock && !product.inStock) return false;
+    if (filters.brands.length && !filters.brands.includes(product.brand_name))
+      return false;
+    // Stok bilgisi yalnızca alan dolu gelen ürünlerde elenir.
+    if (filters.inStock && product.inStock === false) return false;
     if (filters.q && !matchesQuery(product, filters.q)) return false;
     return true;
   });

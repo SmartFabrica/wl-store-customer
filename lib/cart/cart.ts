@@ -55,7 +55,7 @@ export const getCart = async (): Promise<Cart> => {
         product,
         quantity: line.quantity,
         lineTotal:
-          product.price === null ? null : product.price * line.quantity,
+          product.price === null ? null : Number(product.price) * line.quantity,
       },
     ];
   });

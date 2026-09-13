@@ -45,7 +45,7 @@ export const ProductActions = ({ product }: { product: Product }) => {
 
       <AddToCartButton
         productId={product.id}
-        productName={product.name}
+        productName={product.title}
         quantity={quantity}
         className="h-13 gap-2 text-[15px]"
         iconClassName="size-4"

@@ -15,7 +15,7 @@ export const PriceDisplay = ({
   showNote = true,
   className,
 }: {
-  price: number | null;
+  price: string | null;
   size?: keyof typeof SIZES;
   showNote?: boolean;
   className?: string;
@@ -41,7 +41,7 @@ export const PriceDisplay = ({
   return (
     <div className={className}>
       <p className={cn(scale.price, "font-heading font-bold text-foreground")}>
-        {formatPrice(price)}
+        {formatPrice(Number(price))}
       </p>
       {showNote ? (
         <p className="mt-px text-[10.5px] font-medium text-placeholder">

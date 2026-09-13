@@ -21,7 +21,7 @@ export const QuoteSummary = ({ cart }: { cart: Cart }) => {
 
             <div className="min-w-0 flex-1">
               <p className="font-heading text-[13px] leading-snug font-semibold text-foreground">
-                {item.product.name}
+                {item.product.title}
               </p>
               <p className="mt-0.5 font-mono text-[11px] font-medium text-placeholder">
                 MPN: {item.product.mpn}

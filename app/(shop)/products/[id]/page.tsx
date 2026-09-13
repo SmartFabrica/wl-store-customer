@@ -36,8 +36,8 @@ export const generateMetadata = async ({
   if (!product) return { title: "Ürün bulunamadı" };
 
   return {
-    title: product.name,
-    description: `${product.brand} · ${product.mpn} — ${product.category}`,
+    title: product.title,
+    description: `${product.brand_name} · ${product.mpn} — ${product.category_name}`,
   };
 };
 
@@ -50,7 +50,7 @@ const ProductDetailPage = async ({ params }: PageProps<"/products/[id]">) => {
 
   const categoryHref = buildCatalogHref({
     ...parseCatalogFilters({}),
-    category: product.category,
+    category: product.category_name,
   });
 
   return (
@@ -68,12 +68,12 @@ const ProductDetailPage = async ({ params }: PageProps<"/products/[id]">) => {
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink render={<Link href={categoryHref} />}>
-                {product.category}
+                {product.category_name}
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>{product.name}</BreadcrumbPage>
+              <BreadcrumbPage>{product.title}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -83,17 +83,19 @@ const ProductDetailPage = async ({ params }: PageProps<"/products/[id]">) => {
 
           <div>
             <h1 className="mb-3 font-heading text-[27px] leading-tight font-bold text-foreground">
-              {product.name}
+              {product.title}
             </h1>
 
             <div className="mb-4 flex flex-wrap gap-2">
               <span className="rounded-lg bg-muted px-2.75 py-1.25 text-xs font-semibold text-slate-600">
-                Marka: {product.brand}
+                Marka: {product.brand_name}
               </span>
               <span className="rounded-lg bg-muted px-2.75 py-1.25 text-xs font-semibold text-slate-600">
-                {product.category}
+                {product.category_name}
               </span>
-              <StockBadge inStock={product.inStock} />
+              {product.inStock === undefined ? null : (
+                <StockBadge inStock={product.inStock} />
+              )}
             </div>
 
             <div className="mb-5.5 flex flex-wrap items-center gap-2.5">

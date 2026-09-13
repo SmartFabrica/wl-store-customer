@@ -5,13 +5,14 @@ export type FacetOption = {
 
 export type Product = {
   id: string;
-  name: string;
-  brand: string;
-  category: string;
+  title: string;
   mpn: string;
-  price: number | null;
-  inStock: boolean;
-  lead: string;
+  price_visible: boolean;
+  price: string | null;
+  brand_name: string;
+  category_name: string;
+  inStock?: boolean;
+  lead?: string;
 };
 
 export type SpecRow = {

@@ -13,14 +13,20 @@ import {
   filterProducts,
   parseCatalogFilters,
 } from "@/lib/catalog/filters";
+import { getProducts, parseProductQuery } from "@/lib/catalog/products";
 
 export const metadata: Metadata = {
   title: "Ürün kataloğu",
 };
 
 const CatalogPage = async ({ searchParams }: PageProps<"/catalog">) => {
-  const filters = parseCatalogFilters(await searchParams);
-  const products = filterProducts(filters);
+  const params = await searchParams;
+  const filters = parseCatalogFilters(params);
+
+  const products = filterProducts(
+    await getProducts(parseProductQuery(params)),
+    filters,
+  );
   const activeCount = activeFilterCount(filters);
 
   return (
