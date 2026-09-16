@@ -7,20 +7,31 @@ import {
   FilterSection,
 } from "@/components/catalog/filter-section";
 import { StockToggle } from "@/components/catalog/stock-toggle";
-import { BRANDS, CATEGORIES } from "@/lib/catalog/data";
+import { CATEGORIES, mockBrandCount } from "@/lib/catalog/data";
 import {
   activeFilterCount,
-  availableCases,
-  availableModels,
   buildCatalogHref,
   clearedFilters,
   toggleFilter,
 } from "@/lib/catalog/filters";
-import type { CatalogFilters } from "@/lib/catalog/types";
+import type {
+  Brand,
+  BrandModel,
+  CatalogFilters,
+  ModelChassis,
+} from "@/lib/catalog/types";
 
-export const FilterPanel = ({ filters }: { filters: CatalogFilters }) => {
-  const models = availableModels(filters.brands);
-  const cases = availableCases(filters.models);
+export const FilterPanel = ({
+  filters,
+  brands,
+  models,
+  chassis,
+}: {
+  filters: CatalogFilters;
+  brands: Brand[];
+  models: BrandModel[];
+  chassis: ModelChassis[];
+}) => {
   const hasActive = activeFilterCount(filters) > 0;
 
   return (
@@ -46,14 +57,14 @@ export const FilterPanel = ({ filters }: { filters: CatalogFilters }) => {
 
       <FilterSection title="Uyumlu Marka">
         <div className="-mx-1.5 flex max-h-49 flex-col gap-px overflow-auto px-1.5">
-          {BRANDS.map((brand) => (
+          {brands.map((brand) => (
             <FilterCheckItem
-              key={brand.name}
+              key={brand.id}
               href={buildCatalogHref(
                 toggleFilter(filters, { type: "brand", value: brand.name }),
               )}
               label={brand.name}
-              count={brand.count}
+              count={mockBrandCount(brand.name)}
               checked={filters.brands.includes(brand.name)}
             />
           ))}
@@ -69,12 +80,12 @@ export const FilterPanel = ({ filters }: { filters: CatalogFilters }) => {
           <div className="-mx-1.5 flex max-h-45 flex-col gap-px overflow-auto px-1.5">
             {models.map((model) => (
               <FilterCheckItem
-                key={model}
+                key={model.id}
                 href={buildCatalogHref(
-                  toggleFilter(filters, { type: "model", value: model }),
+                  toggleFilter(filters, { type: "model", value: model.name }),
                 )}
-                label={model}
-                checked={filters.models.includes(model)}
+                label={model.name}
+                checked={filters.models.includes(model.name)}
               />
             ))}
           </div>
@@ -82,20 +93,20 @@ export const FilterPanel = ({ filters }: { filters: CatalogFilters }) => {
       </FilterSection>
 
       <FilterSection title="Uyumlu Kasa">
-        {cases.length === 0 ? (
+        {chassis.length === 0 ? (
           <FilterLockedHint>
             Uyumlu kasa seçmek için önce model seçin.
           </FilterLockedHint>
         ) : (
           <div className="-mx-1.5 flex max-h-45 flex-col gap-px overflow-auto px-1.5">
-            {cases.map((item) => (
+            {chassis.map((item) => (
               <FilterCheckItem
-                key={item}
+                key={item.id}
                 href={buildCatalogHref(
-                  toggleFilter(filters, { type: "case", value: item }),
+                  toggleFilter(filters, { type: "case", value: item.name }),
                 )}
-                label={item}
-                checked={filters.cases.includes(item)}
+                label={item.name}
+                checked={filters.cases.includes(item.name)}
               />
             ))}
           </div>

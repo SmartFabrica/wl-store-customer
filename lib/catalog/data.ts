@@ -11,48 +11,22 @@ export const CATEGORIES: FacetOption[] = [
   { name: "Elektrik", count: 208 },
 ];
 
-/** Uyumlu marka listesi. */
-export const BRANDS: FacetOption[] = [
-  { name: "Bosch", count: 1726 },
-  { name: "SKF", count: 1133 },
-  { name: "Festo", count: 921 },
-  { name: "Parker", count: 714 },
-  { name: "Mann", count: 506 },
-  { name: "Schaeffler", count: 388 },
-  { name: "Continental", count: 274 },
-  { name: "Mahle", count: 219 },
-];
-
-/** Uyumlu model listesi — seçili uyumlu markalara göre daralır. */
-export const MODELS_BY_BRAND: Record<string, string[]> = {
-  Bosch: ["CX-220", "CX-240", "LT-90"],
-  SKF: ["RB-6204", "RB-6205", "TR-30206"],
-  Festo: ["DSBC-32", "DSBC-40"],
-  Parker: ["PV-016", "PV-020"],
-  Mann: ["HU-719"],
-  Schaeffler: ["FAG-6203", "INA-KH20"],
-  Continental: ["CT-1028"],
-  Mahle: ["OX-123D"],
+/**
+ * Marka listesi API'den geliyor; yanındaki ürün adedi henüz dönmediği için
+ * geçici olarak buradan okunuyor.
+ */
+const MOCK_BRAND_COUNTS: Record<string, number> = {
+  Bosch: 1726,
+  SKF: 1133,
+  Festo: 921,
+  Parker: 714,
+  Mann: 506,
+  Schaeffler: 388,
+  Continental: 274,
+  Mahle: 219,
 };
 
-/** Uyumlu kasa listesi — seçili uyumlu modellere göre daralır. */
-export const CASES_BY_MODEL: Record<string, string[]> = {
-  "CX-220": ["4x2 Kasa", "6x4 Kasa"],
-  "CX-240": ["6x4 Kasa", "8x4 Kasa"],
-  "LT-90": ["Sabit Kasa", "Damper Kasa"],
-  "RB-6204": ["Standart Kasa"],
-  "RB-6205": ["Standart Kasa", "Ağır Hizmet Kasa"],
-  "TR-30206": ["Ağır Hizmet Kasa"],
-  "DSBC-32": ["Kompakt Kasa"],
-  "DSBC-40": ["Kompakt Kasa", "Uzun Strok Kasa"],
-  "PV-016": ["Blok Kasa"],
-  "PV-020": ["Blok Kasa", "Manifold Kasa"],
-  "HU-719": ["Vidalı Kasa"],
-  "FAG-6203": ["Standart Kasa"],
-  "INA-KH20": ["Lineer Kasa"],
-  "CT-1028": ["Sabit Kasa"],
-  "OX-123D": ["Kartuş Kasa"],
-};
+export const mockBrandCount = (name: string) => MOCK_BRAND_COUNTS[name] ?? 0;
 
 export const PRODUCTS: Product[] = [
   {

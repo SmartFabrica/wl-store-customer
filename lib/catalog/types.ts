@@ -3,6 +3,23 @@ export type FacetOption = {
   count: number;
 };
 
+export type Brand = {
+  id: string;
+  name: string;
+};
+
+export type BrandModel = {
+  id: string;
+  brand_id: string;
+  name: string;
+};
+
+export type ModelChassis = {
+  id: string;
+  model_id: string;
+  name: string;
+};
+
 export type Product = {
   id: string;
   title: string;

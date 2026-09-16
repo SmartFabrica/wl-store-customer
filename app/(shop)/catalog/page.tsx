@@ -8,12 +8,11 @@ import { SortSelect } from "@/components/catalog/sort-select";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ProductCard } from "@/components/shared/product-card";
 import { SiteHeader } from "@/components/shared/site-header";
-import {
-  activeFilterCount,
-  filterProducts,
-  parseCatalogFilters,
-} from "@/lib/catalog/filters";
-import { getProducts, parseProductQuery } from "@/lib/catalog/products";
+import { activeFilterCount, parseCatalogFilters } from "@/lib/catalog/filters";
+import { getBrands } from "@/lib/catalog/brands";
+import { getChassis } from "@/lib/catalog/chassis";
+import { getModels } from "@/lib/catalog/models";
+import { getProducts } from "@/lib/catalog/products";
 
 export const metadata: Metadata = {
   title: "Ürün kataloğu",
@@ -23,10 +22,14 @@ const CatalogPage = async ({ searchParams }: PageProps<"/catalog">) => {
   const params = await searchParams;
   const filters = parseCatalogFilters(params);
 
-  const products = filterProducts(
-    await getProducts(parseProductQuery(params)),
-    filters,
-  );
+  const [{ items: products, total }, brands, models, chassis] =
+    await Promise.all([
+      getProducts(filters),
+      getBrands(),
+      getModels(filters.brands),
+      getChassis(filters.models),
+    ]);
+
   const activeCount = activeFilterCount(filters);
 
   return (
@@ -35,17 +38,27 @@ const CatalogPage = async ({ searchParams }: PageProps<"/catalog">) => {
 
       <div className="grid flex-1 items-start lg:grid-cols-[270px_1fr]">
         <aside className="sticky top-16.5 hidden max-h-[calc(100vh-4.125rem)] self-stretch overflow-auto border-r border-border bg-card lg:block">
-          <FilterPanel filters={filters} />
+          <FilterPanel
+            filters={filters}
+            brands={brands}
+            models={models}
+            chassis={chassis}
+          />
         </aside>
 
         <main className="min-w-0 px-5 pt-6 pb-10 sm:px-7">
           <div className="mb-4 flex flex-wrap items-center gap-4">
             <FilterDrawer activeCount={activeCount}>
-              <FilterPanel filters={filters} />
+              <FilterPanel
+                filters={filters}
+                brands={brands}
+                models={models}
+                chassis={chassis}
+              />
             </FilterDrawer>
 
             <p className="font-heading text-xl font-bold text-foreground">
-              {products.length}{" "}
+              {total}{" "}
               <span className="font-sans text-sm font-normal text-muted-foreground">
                 ürün
               </span>
