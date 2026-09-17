@@ -7,7 +7,7 @@ import {
   FilterSection,
 } from "@/components/catalog/filter-section";
 import { StockToggle } from "@/components/catalog/stock-toggle";
-import { CATEGORIES, mockBrandCount } from "@/lib/catalog/data";
+import { mockBrandCount } from "@/lib/catalog/data";
 import {
   activeFilterCount,
   buildCatalogHref,
@@ -18,16 +18,19 @@ import type {
   Brand,
   BrandModel,
   CatalogFilters,
+  Category,
   ModelChassis,
 } from "@/lib/catalog/types";
 
 export const FilterPanel = ({
   filters,
+  categories,
   brands,
   models,
   chassis,
 }: {
   filters: CatalogFilters;
+  categories: Category[];
   brands: Brand[];
   models: BrandModel[];
   chassis: ModelChassis[];
@@ -52,7 +55,7 @@ export const FilterPanel = ({
       </div>
 
       <FilterSection title="Kategoriler">
-        <CategoryFilter categories={CATEGORIES} filters={filters} />
+        <CategoryFilter categories={categories} filters={filters} />
       </FilterSection>
 
       <FilterSection title="Uyumlu Marka">

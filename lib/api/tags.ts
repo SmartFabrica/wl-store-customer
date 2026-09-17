@@ -1,7 +1,7 @@
 export const apiTags = {
   products: "products",
   product: (id: string) => `product:${id}`,
-  facets: "facets",
+  categories: "categories",
   brands: "brands",
   models: "models",
   chassis: "chassis",

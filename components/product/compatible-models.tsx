@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { formatCount } from "@/lib/format";
 import type { CompatibilityGroup } from "@/lib/catalog/types";
 
-const COLLAPSED_PER_BRAND = 3;
+const COLLAPSED_PER_MODEL = 3;
 
 export const CompatibleModels = ({
   groups,
@@ -20,7 +20,7 @@ export const CompatibleModels = ({
   const searchId = useId();
 
   const totalCount = useMemo(
-    () => groups.reduce((total, group) => total + group.models.length, 0),
+    () => groups.reduce((total, group) => total + group.chassis.length, 0),
     [groups],
   );
 
@@ -32,17 +32,17 @@ export const CompatibleModels = ({
     return groups
       .map((group) => ({
         ...group,
-        models: group.models.filter((model) =>
-          model.toLocaleLowerCase("tr").includes(needle),
+        chassis: group.chassis.filter((item) =>
+          item.toLocaleLowerCase("tr").includes(needle),
         ),
       }))
-      .filter((group) => group.models.length > 0);
+      .filter((group) => group.chassis.length > 0);
   }, [groups, query]);
 
   const collapsed = !expanded && !searching;
   const shownWhenCollapsed = matched.reduce(
     (total, group) =>
-      total + Math.min(COLLAPSED_PER_BRAND, group.models.length),
+      total + Math.min(COLLAPSED_PER_MODEL, group.chassis.length),
     0,
   );
   const canExpand = !searching && totalCount > shownWhenCollapsed;
@@ -52,15 +52,15 @@ export const CompatibleModels = ({
       <div className="mb-1.5 flex flex-wrap items-center gap-2.5">
         <span aria-hidden className="h-5.5 w-1.25 rounded-sm bg-accent" />
         <h2 className="font-heading text-[19px] font-bold text-foreground">
-          Uyumlu modeller
+          Uyumlu model ve kasalar
         </h2>
         <span className="rounded-full border border-warning-border bg-warning px-2.5 py-0.75 text-xs font-semibold text-warning-foreground">
-          {formatCount(totalCount)} model
+          {formatCount(totalCount)} kasa
         </span>
       </div>
       <p className="mb-4.5 text-[13px] leading-relaxed text-placeholder">
-        Bu parçanın uyduğu marka ve modeller. Doğru parçayı seçtiğinizden emin
-        olmak için modelinizi arayın.
+        Bu parçanın uyduğu model ve kasalar. Doğru parçayı seçtiğinizden emin
+        olmak için kasanızı arayın.
       </p>
 
       <div className="relative mb-5 max-w-90">
@@ -73,40 +73,40 @@ export const CompatibleModels = ({
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Model ara"
-          aria-label="Uyumlu model ara"
+          placeholder="Kasa ara"
+          aria-label="Uyumlu kasa ara"
           className="h-10 rounded-lg bg-background pr-3 pl-9 text-[13.5px] placeholder:text-placeholder focus-visible:bg-card"
         />
       </div>
 
       {matched.length === 0 ? (
         <p className="py-1 text-[13px] text-placeholder">
-          Aramanızla eşleşen model bulunamadı.
+          Aramanızla eşleşen kasa bulunamadı.
         </p>
       ) : (
         <div className="flex flex-col gap-5">
           {matched.map((group) => {
-            const models = collapsed
-              ? group.models.slice(0, COLLAPSED_PER_BRAND)
-              : group.models;
+            const chassis = collapsed
+              ? group.chassis.slice(0, COLLAPSED_PER_MODEL)
+              : group.chassis;
 
             return (
-              <div key={group.brand}>
+              <div key={group.model}>
                 <div className="mb-2.5 flex items-baseline gap-2">
                   <h3 className="font-heading text-sm font-bold text-foreground">
-                    {group.brand}
+                    {group.model}
                   </h3>
                   <span className="font-mono text-[11px] font-medium text-placeholder">
-                    {group.models.length} model
+                    {group.chassis.length} kasa
                   </span>
                 </div>
                 <ul className="flex flex-wrap gap-2">
-                  {models.map((model) => (
+                  {chassis.map((item) => (
                     <li
-                      key={model}
+                      key={item}
                       className="rounded-lg border border-border bg-background px-2.75 py-1.5 font-mono text-[12.5px] font-semibold text-slate-600"
                     >
-                      {model}
+                      {item}
                     </li>
                   ))}
                 </ul>
@@ -125,7 +125,7 @@ export const CompatibleModels = ({
         >
           {expanded
             ? "Daha az göster"
-            : `Tüm modelleri göster (${formatCount(totalCount)})`}
+            : `Tüm kasaları göster (${formatCount(totalCount)})`}
         </Button>
       ) : null}
     </div>

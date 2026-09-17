@@ -1,6 +1,6 @@
-export type FacetOption = {
+export type Category = {
+  id: string;
   name: string;
-  count: number;
 };
 
 export type Brand = {
@@ -37,16 +37,26 @@ export type SpecRow = {
   value: string;
 };
 
-export type CompatibilityGroup = {
-  brand: string;
-  models: string[];
+export type ProductCompat = {
+  model_id: string;
+  model_name: string;
+  chassis_id: string;
+  chassis_name: string;
 };
 
-export type ProductDetail = {
-  description: string;
-  specs: SpecRow[];
-  compatibility: CompatibilityGroup[];
-  imageLabels: string[];
+/** Uyumluluk listesi modele göre gruplanır, altında kasalar listelenir. */
+export type CompatibilityGroup = {
+  model: string;
+  chassis: string[];
+};
+
+export type ProductDetail = Product & {
+  description: string | null;
+  specs: SpecRow[] | null;
+  brand_id: string;
+  category_id: string;
+  images: string[];
+  compat: ProductCompat[];
 };
 
 export const SORT_OPTIONS = [

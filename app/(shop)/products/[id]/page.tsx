@@ -9,7 +9,6 @@ import { ProductActions } from "@/components/product/product-actions";
 import { ProductGallery } from "@/components/product/product-gallery";
 import { SpecTable } from "@/components/product/spec-table";
 import { PriceDisplay } from "@/components/shared/price-display";
-import { ProductCard } from "@/components/shared/product-card";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { SiteHeader } from "@/components/shared/site-header";
 import { StockBadge } from "@/components/shared/stock-badge";
@@ -21,18 +20,14 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {
-  getProductById,
-  getProductDetail,
-  getSimilarProducts,
-} from "@/lib/catalog/data";
 import { buildCatalogHref, parseCatalogFilters } from "@/lib/catalog/filters";
+import { getProduct, groupCompatibility } from "@/lib/catalog/product-detail";
 import { CATALOG_PATH } from "@/lib/routes";
 
 export const generateMetadata = async ({
   params,
 }: PageProps<"/products/[id]">): Promise<Metadata> => {
-  const product = getProductById((await params).id);
+  const product = await getProduct((await params).id);
   if (!product) return { title: "Ürün bulunamadı" };
 
   return {
@@ -42,11 +37,10 @@ export const generateMetadata = async ({
 };
 
 const ProductDetailPage = async ({ params }: PageProps<"/products/[id]">) => {
-  const product = getProductById((await params).id);
+  const product = await getProduct((await params).id);
   if (!product) notFound();
 
-  const detail = getProductDetail();
-  const similar = getSimilarProducts(product);
+  const compatibility = groupCompatibility(product.compat);
 
   const categoryHref = buildCatalogHref({
     ...parseCatalogFilters({}),
@@ -79,7 +73,13 @@ const ProductDetailPage = async ({ params }: PageProps<"/products/[id]">) => {
         </Breadcrumb>
 
         <div className="grid gap-6.5 lg:grid-cols-2 lg:gap-10">
-          <ProductGallery imageLabels={detail.imageLabels} />
+          {/* TODO: API görsel dönmeye başlayınca placeholder yerine gerçek
+              görseller render edilecek. */}
+          <ProductGallery
+            imageLabels={
+              product.images.length ? product.images : ["GÖRSEL YOK"]
+            }
+          />
 
           <div>
             <h1 className="mb-3 font-heading text-[27px] leading-tight font-bold text-foreground">
@@ -122,34 +122,33 @@ const ProductDetailPage = async ({ params }: PageProps<"/products/[id]">) => {
           </div>
         </div>
 
-        <section className="mt-11">
-          <SectionHeading className="mb-3.5">Açıklama</SectionHeading>
-          <div className="rounded-xl border border-border bg-card px-6 py-5.5">
-            <p className="max-w-190 text-[14.5px] leading-[1.75] text-slate-600">
-              {detail.description}
-            </p>
-          </div>
-        </section>
-
-        <section className="mt-10">
-          <SectionHeading className="mb-3.5">Teknik özellikler</SectionHeading>
-          <SpecTable specs={detail.specs} />
-        </section>
-
-        <section className="mt-10">
-          <CompatibleModels groups={detail.compatibility} />
-        </section>
-
-        {similar.length > 0 ? (
+        {product.description ? (
           <section className="mt-11">
-            <SectionHeading className="mb-4">Benzer ürünler</SectionHeading>
-            <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-1.5">
-              {similar.map((item) => (
-                <ProductCard key={item.id} product={item} variant="compact" />
-              ))}
+            <SectionHeading className="mb-3.5">Açıklama</SectionHeading>
+            <div className="rounded-xl border border-border bg-card px-6 py-5.5">
+              <p className="max-w-190 text-[14.5px] leading-[1.75] text-slate-600">
+                {product.description}
+              </p>
             </div>
           </section>
         ) : null}
+
+        {product.specs?.length ? (
+          <section className="mt-10">
+            <SectionHeading className="mb-3.5">
+              Teknik özellikler
+            </SectionHeading>
+            <SpecTable specs={product.specs} />
+          </section>
+        ) : null}
+
+        {compatibility.length > 0 ? (
+          <section className="mt-10">
+            <CompatibleModels groups={compatibility} />
+          </section>
+        ) : null}
+
+        {/* TODO: Benzer ürünler bölümü sonra ele alınacak. */}
       </div>
     </div>
   );

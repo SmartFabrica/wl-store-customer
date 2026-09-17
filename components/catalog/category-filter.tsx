@@ -2,13 +2,13 @@ import Link from "next/link";
 import { cn } from "cn";
 
 import { buildCatalogHref, toggleFilter } from "@/lib/catalog/filters";
-import type { CatalogFilters, FacetOption } from "@/lib/catalog/types";
+import type { CatalogFilters, Category } from "@/lib/catalog/types";
 
 export const CategoryFilter = ({
   categories,
   filters,
 }: {
-  categories: FacetOption[];
+  categories: Category[];
   filters: CatalogFilters;
 }) => {
   return (
@@ -21,7 +21,7 @@ export const CategoryFilter = ({
 
         return (
           <Link
-            key={category.name}
+            key={category.id}
             href={href}
             scroll={false}
             className={cn(
@@ -32,14 +32,6 @@ export const CategoryFilter = ({
             )}
           >
             <span>{category.name}</span>
-            <span
-              className={cn(
-                "font-mono text-[11px] font-medium",
-                active ? "text-accent" : "text-border",
-              )}
-            >
-              {category.count.toLocaleString("tr-TR")}
-            </span>
             <span className="sr-only">
               {active ? "seçili, filtreden kaldır" : "filtreye ekle"}
             </span>
