@@ -2,6 +2,11 @@
 
 import { redirect } from "next/navigation";
 
+import { toUserMessage } from "@/lib/api/errors";
+import { loginRequest } from "@/lib/auth/login";
+import { registerAccount } from "@/lib/auth/register";
+import { createSession } from "@/lib/auth/session";
+import { CATALOG_PATH } from "@/lib/routes";
 import {
   loginSchema,
   registerSchema,
@@ -31,12 +36,14 @@ export const login = async (values: LoginInput): Promise<AuthActionState> => {
     return { fieldErrors: toFieldErrors(parsed.error.issues) };
   }
 
-  // TODO: Gerçek kimlik doğrulama API'sine bağlanacak; başarılı yanıtta
-  // oturum çerezi yazılıp kullanıcı ana sayfaya yönlendirilecek.
-  return {
-    formError:
-      "Giriş servisi henüz bağlanmadı. Lütfen daha sonra tekrar deneyin.",
-  };
+  try {
+    const { token, user } = await loginRequest(parsed.data);
+    await createSession(token, user);
+  } catch (error) {
+    return { formError: toUserMessage(error) };
+  }
+
+  redirect(CATALOG_PATH);
 };
 
 export const register = async (
@@ -47,7 +54,11 @@ export const register = async (
     return { fieldErrors: toFieldErrors(parsed.error.issues) };
   }
 
-  // TODO: Başvuruyu API'ye gönder. Şimdilik doğrulama geçtiğinde
-  // başvuru alındı ekranına yönlendiriyoruz.
+  try {
+    await registerAccount(parsed.data);
+  } catch (error) {
+    return { formError: toUserMessage(error) };
+  }
+
   redirect("/register/submitted");
 };

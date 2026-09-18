@@ -1,8 +1,12 @@
 import "server-only";
 
+import { redirect } from "next/navigation";
+
 import { getApiBaseUrl, getApiTimeoutMs } from "@/lib/api/config";
 import { ApiError } from "@/lib/api/errors";
 import type { ApiResponse } from "@/lib/api/types";
+import { getSessionToken } from "@/lib/auth/session";
+import { LOGOUT_PATH } from "@/lib/routes";
 
 type QueryValue = string | number | boolean | null | undefined;
 
@@ -17,6 +21,7 @@ export type ApiRequest = {
   revalidate?: number;
   headers?: Record<string, string>;
   timeoutMs?: number;
+  auth?: boolean;
 };
 
 const buildUrl = (path: string, query?: ApiQuery) => {
@@ -44,9 +49,12 @@ export const apiFetch = async <T>({
   revalidate,
   headers,
   timeoutMs,
+  auth,
 }: ApiRequest): Promise<T> => {
   const shouldCache =
     method === "GET" && (tags !== undefined || revalidate !== undefined);
+
+  const token = auth ? await getSessionToken() : undefined;
 
   let response: Response;
   try {
@@ -55,6 +63,7 @@ export const apiFetch = async <T>({
       headers: {
         Accept: "application/json",
         ...(body === undefined ? {} : { "Content-Type": "application/json" }),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...headers,
       },
       body: body === undefined ? undefined : JSON.stringify(body),
@@ -69,6 +78,10 @@ export const apiFetch = async <T>({
       path,
       cause,
     });
+  }
+
+  if (response.status === 401 && auth) {
+    redirect(LOGOUT_PATH);
   }
 
   const payload = (await response.json()) as ApiResponse<T>;
