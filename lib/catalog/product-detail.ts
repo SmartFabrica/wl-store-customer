@@ -15,6 +15,7 @@ export const getProduct = async (id: string) => {
       path: `/api/customer/products/${id}`,
       tags: [apiTags.product(id)],
       revalidate: 300,
+      auth: true,
     });
   } catch (error) {
     if (isApiError(error) && error.status === 404) return null;

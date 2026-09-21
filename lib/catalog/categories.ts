@@ -9,4 +9,5 @@ export const getCategories = () =>
     path: "/api/customer/categories",
     tags: [apiTags.categories],
     revalidate: 3600,
+    auth: true,
   });

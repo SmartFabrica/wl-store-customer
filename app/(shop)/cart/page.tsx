@@ -52,7 +52,7 @@ const CartPage = async () => {
             <div className="grid items-start gap-5 lg:grid-cols-[1fr_350px] lg:gap-7">
               <ul className="divide-y divide-border/70 rounded-xl border border-border bg-card px-5.5">
                 {cart.items.map((item) => (
-                  <CartLineItem key={item.product.id} item={item} />
+                  <CartLineItem key={item.id} item={item} />
                 ))}
               </ul>
 

@@ -1,5 +1,6 @@
 import { ImagePlaceholder } from "@/components/shared/image-placeholder";
 import { InfoCallout } from "@/components/shared/info-callout";
+import { itemTotal } from "@/lib/cart/cart";
 import { formatPrice } from "@/lib/format";
 import type { Cart } from "@/lib/cart/types";
 
@@ -11,39 +12,43 @@ export const QuoteSummary = ({ cart }: { cart: Cart }) => {
       </h2>
 
       <ul className="-mx-1 mb-1 max-h-74.5 divide-y divide-border/70 overflow-auto px-1">
-        {cart.items.map((item) => (
-          <li key={item.product.id} className="flex items-start gap-3 py-3.5">
-            <ImagePlaceholder
-              label="GÖR"
-              className="size-12 flex-none rounded-[9px]"
-              labelClassName="text-[7px]"
-            />
+        {cart.items.map((item) => {
+          const total = itemTotal(item);
 
-            <div className="min-w-0 flex-1">
-              <p className="font-heading text-[13px] leading-snug font-semibold text-foreground">
-                {item.product.title}
-              </p>
-              <p className="mt-0.5 font-mono text-[11px] font-medium text-placeholder">
-                MPN: {item.product.mpn}
-              </p>
-              <p className="mt-0.75 text-[11px] font-medium text-muted-foreground">
-                Adet: {item.quantity}
-              </p>
-            </div>
+          return (
+            <li key={item.id} className="flex items-start gap-3 py-3.5">
+              <ImagePlaceholder
+                label="GÖR"
+                className="size-12 flex-none rounded-[9px]"
+                labelClassName="text-[7px]"
+              />
 
-            <div className="flex-none text-right">
-              {item.lineTotal === null ? (
-                <span className="text-[11.5px] font-medium text-placeholder">
-                  teklife bağlı
-                </span>
-              ) : (
-                <span className="font-heading text-[13.5px] font-bold text-foreground">
-                  {formatPrice(item.lineTotal)}
-                </span>
-              )}
-            </div>
-          </li>
-        ))}
+              <div className="min-w-0 flex-1">
+                <p className="font-heading text-[13px] leading-snug font-semibold text-foreground">
+                  {item.title}
+                </p>
+                <p className="mt-0.5 font-mono text-[11px] font-medium text-placeholder">
+                  MPN: {item.mpn}
+                </p>
+                <p className="mt-0.75 text-[11px] font-medium text-muted-foreground">
+                  Adet: {item.quantity}
+                </p>
+              </div>
+
+              <div className="flex-none text-right">
+                {total === null ? (
+                  <span className="text-[11.5px] font-medium text-placeholder">
+                    teklife bağlı
+                  </span>
+                ) : (
+                  <span className="font-heading text-[13.5px] font-bold text-foreground">
+                    {formatPrice(total)}
+                  </span>
+                )}
+              </div>
+            </li>
+          );
+        })}
       </ul>
 
       <div className="mt-2 flex items-baseline justify-between gap-3 border-t border-border/70 pt-3.5">

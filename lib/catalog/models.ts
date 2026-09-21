@@ -12,4 +12,5 @@ export const getModels = (brands: string[]): Promise<BrandModel[]> =>
         query: { brands: brands.join(",") },
         tags: [apiTags.models],
         revalidate: 3600,
+        auth: true,
       });

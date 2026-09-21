@@ -22,4 +22,5 @@ export const getProducts = (filters: CatalogFilters) =>
     },
     tags: [apiTags.products],
     revalidate: 300,
+    auth: true,
   });

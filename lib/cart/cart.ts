@@ -2,13 +2,14 @@ import "server-only";
 
 import { cookies } from "next/headers";
 
-import { getProductById } from "@/lib/catalog/data";
+import { apiFetch } from "@/lib/api/client";
 import {
   MAX_QUANTITY,
   MIN_QUANTITY,
   type Cart,
   type CartItem,
   type CartLine,
+  type CartResponse,
 } from "@/lib/cart/types";
 
 export const CART_COOKIE = "cart";
@@ -43,28 +44,20 @@ export const readCartLines = async () => {
 
 export const serializeCartLines = (lines: CartLine[]) => JSON.stringify(lines);
 
+export const itemTotal = (item: CartItem) =>
+  item.price === null ? null : Number(item.price) * item.quantity;
+
 export const getCart = async (): Promise<Cart> => {
-  const lines = await readCartLines();
-
-  const items = lines.flatMap<CartItem>((line) => {
-    const product = getProductById(line.productId);
-    if (!product) return [];
-
-    return [
-      {
-        product,
-        quantity: line.quantity,
-        lineTotal:
-          product.price === null ? null : Number(product.price) * line.quantity,
-      },
-    ];
+  const { items, total_items, total_quantity } = await apiFetch<CartResponse>({
+    path: "/api/customer/cart",
+    auth: true,
   });
 
   return {
     items,
-    itemCount: items.length,
-    totalQuantity: items.reduce((total, item) => total + item.quantity, 0),
-    subtotal: items.reduce((total, item) => total + (item.lineTotal ?? 0), 0),
-    quoteOnlyCount: items.filter((item) => item.lineTotal === null).length,
+    itemCount: total_items,
+    totalQuantity: total_quantity,
+    subtotal: items.reduce((total, item) => total + (itemTotal(item) ?? 0), 0),
+    quoteOnlyCount: items.filter((item) => item.price === null).length,
   };
 };

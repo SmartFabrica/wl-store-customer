@@ -2,15 +2,21 @@
 
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { unstable_rethrow } from "next/navigation";
 
-import { getProductById } from "@/lib/catalog/data";
+import { toUserMessage } from "@/lib/api/errors";
 import {
   CART_COOKIE,
   clampQuantity,
   readCartLines,
   serializeCartLines,
 } from "@/lib/cart/cart";
+import { addCartItem } from "@/lib/cart/items";
 import type { CartLine } from "@/lib/cart/types";
+
+export type CartActionState = {
+  error?: string;
+};
 
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 30;
 
@@ -25,21 +31,22 @@ const writeCart = async (lines: CartLine[]) => {
   revalidatePath("/", "layout");
 };
 
-export const addToCart = async (productId: string, quantity = 1) => {
-  if (!getProductById(productId)) return;
+export const addToCart = async (
+  productId: string,
+  quantity = 1,
+): Promise<CartActionState> => {
+  const amount = clampQuantity(quantity);
 
-  const lines = await readCartLines();
-  const existing = lines.find((line) => line.productId === productId);
+  try {
+    await addCartItem(productId, amount);
+  } catch (error) {
+    unstable_rethrow(error);
+    return { error: toUserMessage(error) };
+  }
 
-  const next = existing
-    ? lines.map((line) =>
-        line.productId === productId
-          ? { ...line, quantity: clampQuantity(line.quantity + quantity) }
-          : line,
-      )
-    : [...lines, { productId, quantity: clampQuantity(quantity) }];
+  revalidatePath("/", "layout");
 
-  await writeCart(next);
+  return {};
 };
 
 export const setCartQuantity = async (productId: string, quantity: number) => {

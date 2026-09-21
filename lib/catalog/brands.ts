@@ -9,4 +9,5 @@ export const getBrands = () =>
     path: "/api/customer/brands",
     tags: [apiTags.brands],
     revalidate: 3600,
+    auth: true,
   });

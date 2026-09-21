@@ -12,4 +12,5 @@ export const getChassis = (models: string[]): Promise<ModelChassis[]> =>
         query: { models: models.join(",") },
         tags: [apiTags.chassis],
         revalidate: 3600,
+        auth: true,
       });

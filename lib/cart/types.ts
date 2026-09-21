@@ -1,5 +1,3 @@
-import type { Product } from "@/lib/catalog/types";
-
 export const MIN_QUANTITY = 1;
 export const MAX_QUANTITY = 999;
 
@@ -9,9 +7,21 @@ export type CartLine = {
 };
 
 export type CartItem = {
-  product: Product;
+  id: string;
+  product_id: string;
   quantity: number;
-  lineTotal: number | null;
+  title: string;
+  mpn: string;
+  price_visible: boolean;
+  price: string | null;
+  brand_name: string;
+  images: string[];
+};
+
+export type CartResponse = {
+  items: CartItem[];
+  total_items: number;
+  total_quantity: number;
 };
 
 export type Cart = {
