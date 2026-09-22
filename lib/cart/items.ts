@@ -9,3 +9,10 @@ export const addCartItem = (productId: string, quantity: number) =>
     body: { productId, quantity },
     auth: true,
   });
+
+export const removeCartItem = (itemId: string) =>
+  apiFetch<void>({
+    path: `/api/customer/cart/items/${itemId}`,
+    method: "DELETE",
+    auth: true,
+  });

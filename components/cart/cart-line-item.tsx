@@ -38,10 +38,7 @@ export const CartLineItem = ({ item }: { item: CartItem }) => {
             productId={item.product_id}
             quantity={item.quantity}
           />
-          <RemoveLineButton
-            productId={item.product_id}
-            productName={item.title}
-          />
+          <RemoveLineButton itemId={item.id} productName={item.title} />
         </div>
       </div>
 

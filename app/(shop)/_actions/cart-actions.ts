@@ -11,7 +11,7 @@ import {
   readCartLines,
   serializeCartLines,
 } from "@/lib/cart/cart";
-import { addCartItem } from "@/lib/cart/items";
+import { addCartItem, removeCartItem } from "@/lib/cart/items";
 import type { CartLine } from "@/lib/cart/types";
 
 export type CartActionState = {
@@ -60,9 +60,19 @@ export const setCartQuantity = async (productId: string, quantity: number) => {
   );
 };
 
-export const removeFromCart = async (productId: string) => {
-  const lines = await readCartLines();
-  await writeCart(lines.filter((line) => line.productId !== productId));
+export const removeFromCart = async (
+  itemId: string,
+): Promise<CartActionState> => {
+  try {
+    await removeCartItem(itemId);
+  } catch (error) {
+    unstable_rethrow(error);
+    return { error: toUserMessage(error) };
+  }
+
+  revalidatePath("/", "layout");
+
+  return {};
 };
 
 export const clearCart = async () => {
