@@ -1,9 +1,10 @@
 "use server";
 
-import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { redirect, unstable_rethrow } from "next/navigation";
 
-import { clearCart } from "@/app/(shop)/_actions/cart-actions";
-import { getCart } from "@/lib/cart/cart";
+import { toUserMessage } from "@/lib/api/errors";
+import { createQuoteRequest } from "@/lib/quotes/create";
 import { quoteSchema, type QuoteInput } from "@/lib/validations/quote";
 import { quoteSubmittedPath } from "@/lib/routes";
 
@@ -21,13 +22,6 @@ const toFieldErrors = (issues: { path: PropertyKey[]; message: string }[]) => {
   return fieldErrors;
 };
 
-// TODO: Teklif numarası API tarafından üretilecek.
-const generateQuoteNumber = () => {
-  const year = new Date().getFullYear();
-  const sequence = String(Math.floor(Math.random() * 100000)).padStart(5, "0");
-  return `TKF-${year}-${sequence}`;
-};
-
 export const createQuote = async (
   values: QuoteInput,
 ): Promise<QuoteActionState> => {
@@ -36,15 +30,23 @@ export const createQuote = async (
     return { fieldErrors: toFieldErrors(parsed.error.issues) };
   }
 
-  const cart = await getCart();
-  if (cart.items.length === 0) {
-    return { formError: "Sepetiniz boş, teklif oluşturulamadı." };
+  const { deliveryAddress, billingSameAsDelivery, billingAddress, note } =
+    parsed.data;
+
+  let quoteNumber: string;
+  try {
+    const { quote } = await createQuoteRequest({
+      shipping_address: deliveryAddress,
+      billing_address: billingSameAsDelivery ? deliveryAddress : billingAddress,
+      buyer_note: note,
+    });
+    quoteNumber = quote.quote_number;
+  } catch (error) {
+    unstable_rethrow(error);
+    return { formError: toUserMessage(error) };
   }
 
-  // TODO: Teklif API'ye gönderilecek; şimdilik sepet boşaltılıp onay
-  // ekranına yönlendiriliyor.
-  const quoteNumber = generateQuoteNumber();
-  await clearCart();
+  revalidatePath("/", "layout");
 
   redirect(quoteSubmittedPath(quoteNumber));
 };

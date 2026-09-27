@@ -1,8 +1,8 @@
-import { QUOTES } from "@/lib/quotes/data";
 import {
   QUOTE_STATUSES,
+  QuoteStatus,
   type Quote,
-  type QuoteStatus,
+  type QuoteListItem,
 } from "@/lib/quotes/types";
 import { QUOTES_PATH } from "@/lib/routes";
 
@@ -26,13 +26,16 @@ export const parseStatusFilter = (
 export const buildQuotesHref = (status: QuoteStatusFilter) =>
   status ? `${QUOTES_PATH}?${STATUS_PARAM}=${status}` : QUOTES_PATH;
 
-export const filterQuotes = (status: QuoteStatusFilter) =>
-  status ? QUOTES.filter((quote) => quote.status === status) : QUOTES;
+export const filterQuotes = (
+  quotes: QuoteListItem[],
+  status: QuoteStatusFilter,
+) => (status ? quotes.filter((quote) => quote.status === status) : quotes);
 
-export const countByStatus = (status: QuoteStatusFilter) =>
-  filterQuotes(status).length;
+/** Fiyatı gizli ürünler hariç toplam; görünür fiyat yoksa `null`. */
+export const quoteTotal = (quote: QuoteListItem) =>
+  quote.total_price === null ? null : Number(quote.total_price);
 
-/** Fiyatlanmış satırların toplamı; hiçbiri fiyatlanmadıysa `null`. */
+/** Mock teklif detayı için: fiyatlanmış satırların toplamı. */
 export const quoteAmount = (quote: Quote) => {
   const priced = quote.items.filter((item) => item.unitPrice !== null);
   if (priced.length === 0) return null;

@@ -35,6 +35,9 @@ export type IndividualUser = UserRow & {
 
 export type UserAggregate = CorporateUser | IndividualUser;
 
+export const profileAddress = (user: UserAggregate) =>
+  user.role === "corporate" ? (user.profile.address ?? "") : "";
+
 export const displayName = (user: UserAggregate) =>
   user.role === "corporate"
     ? user.profile.company_name

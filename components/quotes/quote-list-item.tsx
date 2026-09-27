@@ -3,14 +3,14 @@ import { cn } from "cn";
 
 import { QuoteStatusBadge } from "@/components/quotes/quote-status-badge";
 import { buttonVariants } from "@/components/ui/button";
-import { isFullyPriced, quoteAmount } from "@/lib/quotes/filters";
+import { quoteTotal } from "@/lib/quotes/filters";
 import { formatDate, formatPrice } from "@/lib/format";
 import { quoteDetailPath } from "@/lib/routes";
-import type { Quote } from "@/lib/quotes/types";
+import { QuoteStatus, type QuoteListItem as Quote } from "@/lib/quotes/types";
 
 export const QuoteListItem = ({ quote }: { quote: Quote }) => {
-  const amount = quoteAmount(quote);
-  const highlighted = quote.status === "quoted";
+  const total = quoteTotal(quote);
+  const highlighted = quote.status === QuoteStatus.APPROVED;
 
   return (
     <li
@@ -32,29 +32,29 @@ export const QuoteListItem = ({ quote }: { quote: Quote }) => {
         <div className="min-w-45 flex-1">
           <div className="mb-1.5 flex flex-wrap items-center gap-2.5">
             <span className="font-mono text-[15px] font-semibold tracking-[0.3px] text-foreground">
-              {quote.number}
+              {quote.quote_number}
             </span>
             <QuoteStatusBadge status={quote.status} />
           </div>
           <div className="flex flex-wrap items-center gap-3.5 text-[12.5px] font-medium text-placeholder">
-            <span>{formatDate(quote.createdAt)}</span>
+            <span>{formatDate(quote.created_at)}</span>
             <span aria-hidden className="size-0.75 rounded-full bg-border" />
-            <span>{quote.items.length} ürün</span>
+            <span>{quote.item_count} ürün</span>
           </div>
         </div>
 
         <div className="flex-none text-right">
-          {amount === null ? (
+          {total === null ? (
             <p className="text-[13px] font-medium text-muted-foreground">
               Fiyat teklifte
             </p>
           ) : (
             <>
               <p className="font-heading text-lg font-bold text-foreground">
-                {formatPrice(amount)}
+                {formatPrice(total)}
               </p>
               <p className="mt-0.5 text-[11px] font-medium text-placeholder">
-                {isFullyPriced(quote) ? "Teklif tutarı" : "Kısmi · KDV hariç"}
+                {quote.has_hidden_price ? "Kısmi · KDV hariç" : "Teklif tutarı"}
               </p>
             </>
           )}
@@ -62,7 +62,7 @@ export const QuoteListItem = ({ quote }: { quote: Quote }) => {
 
         <div className="flex-none self-center">
           <Link
-            href={quoteDetailPath(quote.number)}
+            href={quoteDetailPath(quote.quote_number)}
             className={buttonVariants({
               variant: "outline",
               className: "h-9.5 bg-card px-4 text-[13px] font-semibold",

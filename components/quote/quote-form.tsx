@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useTransition, type ReactNode } from "react";
+import { useEffect, useId, useTransition, type ReactNode } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -20,9 +20,11 @@ import {
 export const QuoteForm = ({
   summary,
   subtotal,
+  address,
 }: {
   summary: ReactNode;
   subtotal: number;
+  address: string;
 }) => {
   const [pending, startTransition] = useTransition();
   const deliveryId = useId();
@@ -38,10 +40,19 @@ export const QuoteForm = ({
     formState: { errors },
   } = useForm<QuoteInput>({
     resolver: zodResolver(quoteSchema),
-    defaultValues: QUOTE_FORM_DEFAULTS,
+    defaultValues: {
+      ...QUOTE_FORM_DEFAULTS,
+      deliveryAddress: address,
+      billingAddress: address,
+    },
   });
 
   const sameAsDelivery = useWatch({ control, name: "billingSameAsDelivery" });
+  const deliveryAddress = useWatch({ control, name: "deliveryAddress" });
+
+  useEffect(() => {
+    if (sameAsDelivery) setValue("billingAddress", deliveryAddress);
+  }, [sameAsDelivery, deliveryAddress, setValue]);
 
   const onSubmit = (values: QuoteInput) => {
     startTransition(async () => {
@@ -77,6 +88,7 @@ export const QuoteForm = ({
             rows={3}
             placeholder="Firma / kişi, açık adres, ilçe, il, posta kodu"
             autoComplete="street-address"
+            defaultValue={address}
             error={errors.deliveryAddress?.message}
             {...register("deliveryAddress")}
           />
@@ -105,6 +117,7 @@ export const QuoteForm = ({
                 labelHidden
                 rows={3}
                 placeholder="Fatura ünvanı, adres, vergi dairesi ve vergi no"
+                defaultValue={deliveryAddress}
                 error={errors.billingAddress?.message}
                 {...register("billingAddress")}
               />

@@ -4,10 +4,10 @@ import { cn } from "cn";
 import { QUOTE_STATUS_META } from "@/lib/quotes/data";
 import {
   buildQuotesHref,
-  countByStatus,
+  filterQuotes,
   type QuoteStatusFilter,
 } from "@/lib/quotes/filters";
-import { QUOTE_STATUSES } from "@/lib/quotes/types";
+import { QUOTE_STATUSES, type QuoteListItem } from "@/lib/quotes/types";
 
 const TABS: { value: QuoteStatusFilter; label: string }[] = [
   { value: null, label: "Tümü" },
@@ -17,7 +17,13 @@ const TABS: { value: QuoteStatusFilter; label: string }[] = [
   })),
 ];
 
-export const StatusFilterTabs = ({ active }: { active: QuoteStatusFilter }) => {
+export const StatusFilterTabs = ({
+  active,
+  quotes,
+}: {
+  active: QuoteStatusFilter;
+  quotes: QuoteListItem[];
+}) => {
   return (
     <nav
       aria-label="Teklif durumu"
@@ -25,7 +31,7 @@ export const StatusFilterTabs = ({ active }: { active: QuoteStatusFilter }) => {
     >
       {TABS.map((tab) => {
         const isActive = tab.value === active;
-        const count = countByStatus(tab.value);
+        const count = filterQuotes(quotes, tab.value).length;
 
         return (
           <Link

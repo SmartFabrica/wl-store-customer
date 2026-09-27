@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { SiteHeader } from "@/components/shared/site-header";
 import { buttonVariants } from "@/components/ui/button";
 import { filterQuotes, parseStatusFilter } from "@/lib/quotes/filters";
+import { getQuotes } from "@/lib/quotes/list";
 import { CATALOG_PATH } from "@/lib/routes";
 
 export const metadata: Metadata = {
@@ -16,7 +17,8 @@ export const metadata: Metadata = {
 
 const QuotesPage = async ({ searchParams }: PageProps<"/quotes">) => {
   const status = parseStatusFilter(await searchParams);
-  const quotes = filterQuotes(status);
+  const allQuotes = await getQuotes();
+  const quotes = filterQuotes(allQuotes, status);
 
   return (
     <div className="min-h-screen bg-background">
@@ -28,7 +30,7 @@ const QuotesPage = async ({ searchParams }: PageProps<"/quotes">) => {
         </h1>
 
         <div className="mb-5.5">
-          <StatusFilterTabs active={status} />
+          <StatusFilterTabs active={status} quotes={allQuotes} />
         </div>
 
         {quotes.length === 0 ? (
@@ -55,7 +57,7 @@ const QuotesPage = async ({ searchParams }: PageProps<"/quotes">) => {
         ) : (
           <ul className="flex flex-col gap-3.5">
             {quotes.map((quote) => (
-              <QuoteListItem key={quote.number} quote={quote} />
+              <QuoteListItem key={quote.id} quote={quote} />
             ))}
           </ul>
         )}

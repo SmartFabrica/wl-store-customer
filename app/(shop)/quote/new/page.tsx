@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { QuoteForm } from "@/components/quote/quote-form";
 import { QuoteSummary } from "@/components/quote/quote-summary";
 import { SiteHeader } from "@/components/shared/site-header";
+import { getSessionUser } from "@/lib/auth/session";
+import { profileAddress } from "@/lib/auth/types";
 import { getCart } from "@/lib/cart/cart";
 import { CART_PATH } from "@/lib/routes";
 
@@ -14,6 +16,9 @@ export const metadata: Metadata = {
 const NewQuotePage = async () => {
   const cart = await getCart();
   if (cart.items.length === 0) redirect(CART_PATH);
+
+  const user = await getSessionUser();
+  const address = user ? profileAddress(user) : "";
 
   return (
     <div className="min-h-screen bg-background">
@@ -32,6 +37,7 @@ const NewQuotePage = async () => {
         <QuoteForm
           summary={<QuoteSummary cart={cart} />}
           subtotal={cart.subtotal}
+          address={address}
         />
       </div>
     </div>

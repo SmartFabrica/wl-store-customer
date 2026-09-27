@@ -74,7 +74,3 @@ export const removeFromCart = async (
 
   return {};
 };
-
-export const clearCart = async () => {
-  await writeCart([]);
-};

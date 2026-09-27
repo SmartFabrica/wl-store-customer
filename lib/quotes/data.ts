@@ -1,26 +1,32 @@
-import type { Quote, QuoteStatus } from "@/lib/quotes/types";
+import { QuoteStatus, type Quote } from "@/lib/quotes/types";
 
 export const QUOTE_STATUS_META: Record<
   QuoteStatus,
   { label: string; tabLabel: string; tone: "warning" | "success"; note: string }
 > = {
-  reviewing: {
+  [QuoteStatus.PENDING]: {
     label: "Satıcı inceliyor",
     tabLabel: "İnceleniyor",
     tone: "warning",
     note: "Satıcı teklifini hazırlıyor. Fiyatlar tamamlandığında burada görünecek.",
   },
-  quoted: {
-    label: "Teklif hazır",
-    tabLabel: "Teklif verildi",
+  [QuoteStatus.APPROVED]: {
+    label: "Onaylandı",
+    tabLabel: "Onaylandı",
     tone: "success",
-    note: "Satıcı teklifini hazırladı. Kabul süreci yönetici tarafından yürütülür; sonucu bu sayfadan takip edebilirsin.",
+    note: "Teklif onaylandı. Satıcı süreci başlattı; gelişmeleri e-posta ile alacaksın.",
   },
-  accepted: {
-    label: "Kabul edildi",
-    tabLabel: "Kabul edildi",
+  [QuoteStatus.SHIPPED]: {
+    label: "Kargoda",
+    tabLabel: "Kargoda",
     tone: "success",
-    note: "Bu teklif kabul edildi. Satıcı süreci başlattı; gelişmeleri e-posta ile alacaksın.",
+    note: "Ürünler kargoya verildi. Teslimat bilgileri e-posta ile iletilir.",
+  },
+  [QuoteStatus.COMPLETED]: {
+    label: "Tamamlandı",
+    tabLabel: "Tamamlandı",
+    tone: "success",
+    note: "Bu teklif süreci tamamlandı.",
   },
 };
 
@@ -32,7 +38,7 @@ export const QUOTES: Quote[] = [
   {
     number: "TKF-2026-00042",
     createdAt: "2026-07-24",
-    status: "quoted",
+    status: QuoteStatus.APPROVED,
     deliveryAddress: DEFAULT_DELIVERY_ADDRESS,
     billingAddress: null,
     taxInfo: "VD: Nilüfer · VKN: 1234567890",
@@ -61,7 +67,7 @@ export const QUOTES: Quote[] = [
   {
     number: "TKF-2026-00039",
     createdAt: "2026-07-22",
-    status: "reviewing",
+    status: QuoteStatus.PENDING,
     deliveryAddress: DEFAULT_DELIVERY_ADDRESS,
     billingAddress: null,
     taxInfo: "VD: Nilüfer · VKN: 1234567890",
@@ -84,7 +90,7 @@ export const QUOTES: Quote[] = [
   {
     number: "TKF-2026-00031",
     createdAt: "2026-07-18",
-    status: "accepted",
+    status: QuoteStatus.COMPLETED,
     deliveryAddress: DEFAULT_DELIVERY_ADDRESS,
     billingAddress:
       "Yılmaz Endüstri A.Ş.\nBarbaros Mah. 12. Sok. No:4\nOsmangazi / Bursa · 16050",
